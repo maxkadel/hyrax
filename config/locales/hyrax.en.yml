@@ -31,6 +31,9 @@ en:
       filters:
         title: 'Filtering by:'
       start_over: Start Over
+  download:
+    one: and 1 download
+    other: and %{count} downloads
   errors:
     messages:
       carrierwave_download_error: Couldn't download image.
@@ -181,131 +184,131 @@ en:
           confirm_delete: Are you sure you wish to delete this Administrative Set? This action cannot be undone.
       analytics:
         collection_reports:
-          index:
-            title: Collections Report
-            repo_summary: The repository contains
-            repo_summary_2: which collectively have had
-            views: page views
-            and: and
-            summary: Summary
-            monthly: Monthly
-            custom_range:  Custom Range
-            downloads: downloads
-            report_header: Custom Collections Report
-            report_generated_on: This report was generated on
-            enable_analytics: Enable Analytics To View Reports
-          show:
-            title: Collection Report
-            summary: Summary
-            monthly: Monthly
-            custom_range:  Custom Range
-            return_to_btn: Return to Collections Report
-            view_collection_btn: View Collection
-            created_by:  Created by
-            last_updated: Last updated on
-            collection_type: Collection type
-            visibility: Visibility
-          summary:
-            subtitle: Summary of user activity
-            collection_home_page_views: Collection home page views
-            work_views: Views of works
-            work_downloads: Downloads of works
-            date_range: Date range
-            today: Today
-            this_week: This week
-            this_month: This month
-            this_year: This year
-            all_time: All time
-          monthly_summary:
-            monthly_subtitle: Month-by-month status for last 12 months through
-            collection_views: Collection home page views
-            work_views: Views of works
-            work_downloads: Downloads of works
           custom_range:
+            collection_home_page_views: Collection home page views
             date_range_heading: Customize Date Range
             summary_heading: Summary of user activity
-            collection_home_page_views: Collection home page views
-            work_views: Views of works
             work_downloads: Downloads of works
-          top_collections:
-            top_collections: Top Collections
-            collection_title: Collection Title
-            works_in_collection_views: Works In This Collection Views
-            file_downloads_in_collection: File Set Downloads In This Collection
-            collection_page_views: Collection Page Views
-            deleted: Collection deleted
-            export: Export
-        work_reports:
+            work_views: Views of works
           index:
-            title: Works Report
-            subtitle: Summary of user activity
-            repo_summary: in this repository which collectively have had
-            works: works
-            views: views
             and: and
-            access_to: You have access to
-            summary: Summary
-            monthly: Monthly
-            custom_range:  Custom Range
+            custom_range: Custom Range
             downloads: downloads
             enable_analytics: Enable Analytics To View Reports
-            report_generated_on: This report was generated on
-          show:
-            title: Work Report
-            summary: Summary
             monthly: Monthly
-            custom_range:  Custom Range
-            return_to_btn: Return to Works Report
-            view_work_btn: View Work
-            deposited_by:  Deposited by
-            work_type: Work type
-            resource_type: Resource type
-            status: Status
-            visibility: Visibility
-          work_files:
-            title: Files
-            total_downloads: Total Downloads
-          work_counts:
-             total_size: total size
-             child_works: child works
-             files: files
-          summary:
-            subtitle: Summary of user activity
-            unique_visitors: Unique Visitors
-            page_views: Page Views
-            file_downloads: File Downloads
-            date_range: Date range
-            today: Today
-            this_week: This week
-            this_month: This month
-            this_year: This year
-            all_time: All time
+            repo_summary: The repository contains
+            repo_summary_2: which collectively have had
+            report_generated_on: This report was generated on
+            report_header: Custom Collections Report
+            summary: Summary
+            title: Collections Report
+            views: page views
           monthly_summary:
+            collection_views: Collection home page views
+            monthly_subtitle: Month-by-month status for last 12 months through
+            work_downloads: Downloads of works
+            work_views: Views of works
+          show:
+            collection_type: Collection type
+            created_by: Created by
+            custom_range: Custom Range
+            last_updated: Last updated on
+            monthly: Monthly
+            return_to_btn: Return to Collections Report
+            summary: Summary
+            title: Collection Report
+            view_collection_btn: View Collection
+            visibility: Visibility
+          summary:
+            all_time: All time
+            collection_home_page_views: Collection home page views
+            date_range: Date range
+            subtitle: Summary of user activity
+            this_month: This month
+            this_week: This week
+            this_year: This year
+            today: Today
+            work_downloads: Downloads of works
+            work_views: Views of works
+          top_collections:
+            collection_page_views: Collection Page Views
+            collection_title: Collection Title
+            deleted: Collection deleted
+            export: Export
+            file_downloads_in_collection: File Set Downloads In This Collection
+            top_collections: Top Collections
+            works_in_collection_views: Works In This Collection Views
+        date_range_form:
+          date_range_heading: Customize Date Range
+          end_date: End Date
+          reset_date_range: Reset Date Range
+          set_date_range: Set Report Date Range
+          start_date: Start Date
+        work_reports:
+          custom_range:
+            file_downloads: File Downloads
+            page_views: Page Views
+            summary_heading: Summary of user activity
+            unique_visitors: Unique Visitors
+          index:
+            access_to: You have access to
+            and: and
+            custom_range: Custom Range
+            downloads: downloads
+            enable_analytics: Enable Analytics To View Reports
+            monthly: Monthly
+            repo_summary: in this repository which collectively have had
+            report_generated_on: This report was generated on
+            subtitle: Summary of user activity
+            summary: Summary
+            title: Works Report
+            views: views
+            works: works
+          monthly_summary:
+            file_downloads: File Downloads
             monthly_subtitle: Month-by-month status for the last 12 months through
             page_views: Page Views
+          show:
+            custom_range: Custom Range
+            deposited_by: Deposited by
+            monthly: Monthly
+            resource_type: Resource type
+            return_to_btn: Return to Works Report
+            status: Status
+            summary: Summary
+            title: Work Report
+            view_work_btn: View Work
+            visibility: Visibility
+            work_type: Work type
+          summary:
+            all_time: All time
+            date_range: Date range
             file_downloads: File Downloads
+            page_views: Page Views
+            subtitle: Summary of user activity
+            this_month: This month
+            this_week: This week
+            this_year: This year
+            today: Today
+            unique_visitors: Unique Visitors
+          top_file_set_downloads:
+            file: File
+            file_downloads: File Downloads
+            file_name: File Name
+            top_downloads: Top File Downloads
           top_works:
+            export: Export
+            file_downloads: File Downloads
             top_works: Top Works
             work_title: Work Title
             work_views: Work Page Views
-            file_downloads: File Downloads
-            export: Export
-          top_file_set_downloads:
-            top_downloads: Top File Downloads
-            file_name: File Name
-            file: File
-            file_downloads: File Downloads
-          custom_range:
-            summary_heading: Summary of user activity
-            unique_visitors: Unique Visitors
-            page_views: Page Views
-            file_downloads: File Downloads
-        date_range_form:
-            date_range_heading: Customize Date Range
-            start_date: Start Date
-            end_date: End Date
-            set_date_range: Set Report Date Range
-            reset_date_range: Reset Date Range
+          work_counts:
+            child_works: child works
+            files: files
+            total_size: total size
+          work_files:
+            title: Files
+            total_downloads: Total Downloads
       appearances:
         show:
           header: Appearance
@@ -391,9 +394,11 @@ en:
           header: Features
       sidebar:
         activity: Activity
+        analytics: Analytics
         appearance: Appearance
         collection_types: Collection Types
         collections: Collections
+        collections_report: Collections Report
         configuration: Configuration
         content_blocks: Content Blocks
         dashboard: Dashboard
@@ -404,9 +409,6 @@ en:
         repository_objects: Repository Contents
         settings: Settings
         statistics: Statistics
-        analytics: Analytics
-        works_report: Works Report
-        collections_report: Collections Report
         tasks: Tasks
         technical: Features
         transfers: Transfers
@@ -416,6 +418,7 @@ en:
         workflow_roles: Workflow Roles
         works: Works
         works_listing: Works listing
+        works_report: Works Report
       stats:
         deposited_form:
           end_label: end [defaults to now]
@@ -460,16 +463,16 @@ en:
         index:
           header: Review Submissions
           heading:
-            work: Work
             depositor: Depositor
-            submission_date: Submission Date
             status: status
-          works_published: "<strong>%{total_count} works</strong> published"
-          works_under_review: "<strong>%{total_count} works</strong> under review"
-          works_listing: Works listing
+            submission_date: Submission Date
+            work: Work
           tabs:
             published: Published
             under_review: Under Review
+          works_listing: Works listing
+          works_published: "<strong>%{total_count} works</strong> published"
+          works_under_review: "<strong>%{total_count} works</strong> under review"
     api:
       accepted:
         default: Your request has been accepted for processing, but processing is not complete. See job for more info.
@@ -603,8 +606,8 @@ en:
         help_html: Select the file to be used as the thumbnail for this work.
         legend_html: Thumbnail
       form_visibility_component:
+        subtitle_html: "<small>Who should be able to view or download this content?</small>"
         visibility: Visibility
-        subtitle_html: <small>Who should be able to view or download this content?</small>
       inspect_work:
         back_to: Back to
         entity_id: Entity ID
@@ -772,6 +775,13 @@ en:
         select_heading: 'Select the collection to add your files to:'
         title: Add to collection
         update: Save changes
+    collection_type:
+      admin_set_title: Admin Set
+      default_title: User Collection
+    collection_types:
+      create_service:
+        admin_set_description: An aggregation of works that is intended to help with administrative control. Admin Sets provide a way of defining behaviors and policies around a set of works.
+        default_description: A User Collection can be created by any user to organize their works.
     collections:
       search_form:
         button_label: Go
@@ -793,13 +803,6 @@ en:
         number_of_results_to_display_per_page: Number of results to display per page
         results_per_page: 'Results per page:'
         sort_by_html: "<span>Sort by:</span>"
-    collection_type:
-      admin_set_title: Admin Set
-      default_title: User Collection
-    collection_types:
-      create_service:
-        admin_set_description: An aggregation of works that is intended to help with administrative control. Admin Sets provide a way of defining behaviors and policies around a set of works.
-        default_description: A User Collection can be created by any user to organize their works.
     contact_form:
       button_label: Send
       email_label: Your Email
@@ -851,11 +854,9 @@ en:
         select_type_of_collection: Select type of collection
       collections:
         collection_title: Collection Title
-        last_updated: Last updated
-        works: Works
-        files: Files
         edit:
           header: 'Edit %{type_title}: %{title}'
+        files: Files
         form:
           permission_update_errors:
             error: Invalid update option for permission template.
@@ -952,8 +953,10 @@ en:
             remove: Remove
             title: Viewers
             type: Type
+        last_updated: Last updated
         new:
           header: New %{type_title}
+        recent_activity: Recent activity
         show:
           header: Collection
           item_count: Works
@@ -979,11 +982,10 @@ en:
           creator: 'Creator:'
           depositor: 'Depositor:'
           edit_access: 'Edit Access:'
-        title: 'Collections'
-        recent_activity: Recent activity
         sort_and_per_page:
           show_par_page_html: Show %{select} per page
           sort_by: 'Sort By:'
+        title: Collections
         work_action_menu:
           delete_work: Delete work
           deleting_from_work: Deleting a work from %{application_name} is permanent. Click OK to delete this work from %{application_name}, or Cancel to cancel this operation
@@ -992,6 +994,7 @@ en:
           remove_from_collection: Remove from collection
           select_an_action: Select an action
           transfer_ownership_of_work: Transfer ownership of work
+        works: Works
       create_work: Create Work
       current_proxies: Current Proxies
       delete_notification: Delete Notification
@@ -1042,7 +1045,6 @@ en:
           view_admin_set: View collection
           view_collection: View collection
           work_confirmation: Deleting a work from %{application_name} is permanent. Click OK to delete this work from %{application_name}, or Cancel to cancel this operation
-        collections: Collections
         collection_list:
           description: 'Description:'
           edit_access: 'Edit Access:'
@@ -1052,6 +1054,7 @@ en:
             manage: Manage
             view: View
           users: 'Users:'
+        collections: Collections
         facet_label:
           collections: 'Filter collections:'
           highlighted: 'Filter highlights:'
@@ -1117,36 +1120,32 @@ en:
       repository_growth:
         collections: Collections
         date: Date
-        works: Works
         title: Repository Growth
+        works: Works
       repository_objects:
         status: Current Status
         subtitle: Current Status
         title: Repository Objects
       resource_type_graph:
+        count: Count
         resource_type: Resource Type
         title: Resource Types
-        count:  Count
-      work_type_graph:
-        work_type: Work Type
-        title: Work Types
-        count: Count
       show_admin:
         current_registered_users: Current
+        graph_reports: Customized Graph Reports
         new_visitors: New Visitors
         past_30_days: Past 30 days
         registered_users: Registered Users
         returning_visitors: Returning Visitors
         total_visitors: Total Visitors
-        graph_reports: Customized Graph Reports
       stats:
         collections: Collections created
-        work_views: Metadata View
         file_downloads: File Download
         file_views: File View
         files: Files deposited
         heading: Your Statistics
         joined_on: Joined on
+        work_views: Metadata View
         works: Works created
       tabs:
         admin_sets: Admin Sets
@@ -1158,9 +1157,9 @@ en:
       user_activity:
         date: Date
         new_users: New Users
+        new_visitors: New Visitors
         registered_users: Registered Users
         returning_visitors: Returning Visitors
-        new_visitors: New Visitors
         subtitle: New user signups
         title: User Activity
         total_visitors: Total Visitors
@@ -1175,6 +1174,10 @@ en:
       view_files: View Files
       visibility_graph:
         visibility: Visibility
+      work_type_graph:
+        count: Count
+        title: Work Types
+        work_type: Work Type
     document_language: en
     edit_profile: Edit Profile
     embargoes:
@@ -1547,15 +1550,6 @@ en:
         link_expired_not_found: Single Use Link Expired or Not Found
         link_not_found: Single use link Not Found
     sort_label: Sort the listing of items
-    stats:
-      work:
-        header: Work Analytics
-        pageviews: Pageviews
-        downloads: Downloads
-      pageviews:
-        pageviews: Page Views
-      downloads:
-        downloads: Downloads
     static:
       mendeley:
         contact_form: Contact Form
@@ -1565,6 +1559,15 @@ en:
         contact_form: Contact Form
         export_to_zotero: Export to Zotero
         export_to_zotero_details: 'Exporting to Zotero is supported via embedded metadata.  If Zotero does not automatically pick up metadata for deposited files, please report the issue via the '
+    stats:
+      downloads:
+        downloads: Downloads
+      pageviews:
+        pageviews: Page Views
+      work:
+        downloads: Downloads
+        header: Work Analytics
+        pageviews: Pageviews
     toolbar:
       dashboard:
         menu: Dashboard
@@ -1848,6 +1851,3 @@ en:
   total_view:
     one: This work has 1 total view
     other: This work has %{count} total views
-  download:
-    one: and 1 download
-    other: and %{count} downloads
