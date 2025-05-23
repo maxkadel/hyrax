@@ -460,6 +460,7 @@ en:
           deposited: 'deposited '
           deposits_by_users: 'Deposits By Users '
         new_users:
+          newest_users: "Newest Users %{users}"
           of: 'of '
           registered: registered
           total: 'Total: '
