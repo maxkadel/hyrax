@@ -144,7 +144,6 @@ en:
             title: Viewers
             type: Type
         form_participants:
-          access_options: access_options,
           add_group: 'Add group:'
           add_participants: Add Participants
           add_user: 'Add user:'
@@ -376,7 +375,6 @@ en:
             title: Managers
             type: Type
         form_participants:
-          access_options: access_options,
           add_group: Add group
           add_participants: Add Participants
           add_user: Add user
