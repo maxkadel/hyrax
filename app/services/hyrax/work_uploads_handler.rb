@@ -78,7 +78,7 @@ module Hyrax
     def add(files:, file_set_params: [])
       validate_files(files) &&
         @files = Array.wrap(files).reject { |f| f.file_set_uri.present? }
-      @file_set_params = file_set_params
+      @file_set_params = file_set_params || []
       self
     end
 
