@@ -138,19 +138,17 @@ module Hyrax
     ##
     # @api private
     #
-    # @note the second hash overrides values in the first hash - this along with the schema validations should disallow setting arbitrary attributes
+    # @note the second hash overrides values in the first hash
     #
     #
     # @return [Hash{Symbol => Object}]
     def file_set_args(file, file_set_params = {})
-      file_set_params.merge(
-        { depositor: file.user.user_key,
-          creator: file.user.user_key,
-          date_uploaded: file.created_at,
-          date_modified: Hyrax::TimeService.time_in_utc,
-          label: file.uploader.filename,
-          title: file.uploader.filename }
-      )
+      { depositor: file.user.user_key,
+        creator: file.user.user_key,
+        date_uploaded: file.created_at,
+        date_modified: Hyrax::TimeService.time_in_utc,
+        label: file.uploader.filename,
+        title: file.uploader.filename }.merge(file_set_params)
     end
 
     ##
