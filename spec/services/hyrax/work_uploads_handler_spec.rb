@@ -116,23 +116,41 @@ RSpec.describe Hyrax::WorkUploadsHandler, valkyrie_adapter: :test_adapter do
             end
           end
         end
-        context 'that should be set based on the file information' do
+        context 'that should not be set based on the passed in information' do
           let(:file_set_params) do
             [
-              { title: ['not applied 1'] },
-              { title: ['not applied 2'] },
-              { title: ['not applied 3'] }
+              { internal_resource: "not even a resource type" },
+              { contentinternal_resource_type: "not even a resource type" },
+              { internal_resource: "not even a resource type" }
+            ]
+          end
+          it 'does not assign the file_set_params to the FileSets' do
+            pending('Validating which FileSet parameters should be allowed and which should not')
+            service.add(files: uploads, file_set_params: file_set_params)
+            service.attach
+            expect(work).to have_file_set_members(have_attributes(internal_resource: '"Hyrax::FileSet"'),
+                                      have_attributes(internal_resource: '"Hyrax::FileSet"'),
+                                      have_attributes(internal_resource: '"Hyrax::FileSet"'))
+          end
+        end
+        context 'that should be set based on the passed in information' do
+          let(:file_set_params) do
+            [
+              { title: ['Title not based on file name 1'] },
+              { title: ['Title not based on file name 2'] },
+              { title: ['Title not based on file name 3'] }
             ]
           end
 
-          it 'does not assign the invalid file_set_params to the FileSets' do
+          it 'assigns the file_set_params to the FileSets' do
             service.add(files: uploads, file_set_params: file_set_params)
             service.attach
-            expect(work).to have_file_set_members(have_attributes(title: ['image.jp2']),
-                                      have_attributes(title: ['image.jp2']),
-                                      have_attributes(title: ['image.jp2']))
+            expect(work).to have_file_set_members(have_attributes(title: ['Title not based on file name 1']),
+                                      have_attributes(title: ['Title not based on file name 2']),
+                                      have_attributes(title: ['Title not based on file name 3']))
           end
         end
+        context 'that should not be based on passed in information'
       end
 
       # we can't use the memory based test_adapter to test asynch,
