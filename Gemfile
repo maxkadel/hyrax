@@ -18,6 +18,7 @@ group :development, :test do
   gem 'pry' unless ENV['CI']
   gem 'pry-byebug' unless ENV['CI']
   gem 'rspec'
+  gem 'rspec_junit_formatter', github: 'maxkadel/rspec_junit_formatter_roundtrip', branch: 'add_identifier_to_xml'
   gem 'ruby-prof', require: false
   gem 'semaphore_test_boosters'
   gem 'simplecov', require: false
