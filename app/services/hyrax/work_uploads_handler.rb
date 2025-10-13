@@ -93,11 +93,13 @@ module Hyrax
       return true if Array.wrap(files).empty? # short circuit to avoid aquiring a lock we won't use
 
       acquire_lock_for(work.id) do
+        reloaded_work = Hyrax.query_service.find_by(id: work.id)
         event_payloads = files.each_with_object([]).with_index do |(file, arry), index|
           arry << make_file_set_and_ingest(file, @file_set_params[index] || {})
         end
-        @persister.save(resource: work)
-        Hyrax.publisher.publish('object.metadata.updated', object: work, user: files.first.user)
+
+        @persister.save(resource: reloaded_work)
+        Hyrax.publisher.publish('object.metadata.updated', object: reloaded_work, user: files.first.user)
         event_payloads.each do |payload|
           payload.delete(:job).enqueue
           Hyrax.publisher.publish('file.set.attached', payload)
