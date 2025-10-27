@@ -8,6 +8,16 @@ RSpec.describe Hyrax::WorkUploadsHandler, valkyrie_adapter: :test_adapter do
   let(:uploads) { FactoryBot.create_list(:uploaded_file, 3) }
   let(:work) { FactoryBot.valkyrie_create(:hyrax_work, :public) }
 
+  describe '#add' do
+    context 'with a non-UploadedFile object' do
+      let(:wrong_kind_of_file) { File.new(fixture_path + '/image.jpg') }
+      it 'raises an error' do
+        expect do
+          service.add(files: [wrong_kind_of_file])
+        end.to raise_error(ArgumentError)
+      end
+    end
+  end
   describe '#attach' do
     let(:listener) { Hyrax::Specs::AppendingSpyListener.new }
     before { Hyrax.publisher.subscribe(listener) }

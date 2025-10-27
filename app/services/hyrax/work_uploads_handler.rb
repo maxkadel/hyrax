@@ -187,6 +187,7 @@ module Hyrax
     def validate_files(files)
       files.each do |file|
         next if file.is_a? Hyrax::UploadedFile
+
         raise ArgumentError, "Hyrax::UploadedFile required, but #{file.class} received: #{file.inspect}"
       end
     end
