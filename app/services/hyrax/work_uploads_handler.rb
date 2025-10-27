@@ -56,7 +56,7 @@ module Hyrax
     # @param [Hyrax::Work] work
     # @param [#save] persister the valkyrie persister to use
     def initialize(work:, persister: Hyrax.persister)
-      @work = work
+      @work = work # Note that this is reloaded after locking
       @persister = persister
     end
 
@@ -77,7 +77,7 @@ module Hyrax
     #   `UploadedFile`
     def add(files:, file_set_params: [])
       validate_files(files) &&
-        @files = Array.wrap(files).reject { |f| f.file_set_uri.present? }
+        @files = Array.wrap(files).reject { |file| work.member_ids.include?(file.file_set_uri) }
       @file_set_params = file_set_params || []
       self
     end
@@ -93,6 +93,7 @@ module Hyrax
       return true if Array.wrap(files).empty? # short circuit to avoid aquiring a lock we won't use
 
       acquire_lock_for(work.id) do
+        @work = Hyrax.query_service.find_by(id: work.id) # reload work so we are sure to have the most recent version after locking
         event_payloads = files.each_with_object([]).with_index do |(file, arry), index|
           arry << make_file_set_and_ingest(file, @file_set_params[index] || {})
         end
