@@ -30,11 +30,13 @@ class FileSetAttachedEventJob < ContentEventJob
   end
 
   def curation_concern
-    case repo_object
-    when ActiveFedora::Base
-      repo_object.in_works.first
-    else
-      Hyrax.query_service.find_parents(resource: repo_object).first
-    end
+    curation_concern = case repo_object
+                       when ActiveFedora::Base
+                         repo_object.in_works.first
+                       else
+                         Hyrax.query_service.find_parents(resource: repo_object).first
+                       end
+    raise Hyrax::ObjectNotFoundError unless curation_concern
+    curation_concern
   end
 end

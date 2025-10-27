@@ -53,5 +53,14 @@ RSpec.describe FileSetAttachedEventJob do
       expect(curation_concern.events).to contain_exactly(event)
       expect(file_set.events).to contain_exactly(event)
     end
+    context 'when it cannot find the parent work' do
+      let(:file_set) do
+        FactoryBot.valkyrie_create(:hyrax_file_set, title: 'A Contained FileSet')
+      end
+      it 'raises a Hyrax::ObjectNotFound error' do
+        allow(Hyrax.query_service).to receive(:find_parents).with(resource: file_set).and_return([])
+        expect { described_class.perform_now(file_set, user) }.to raise_error(Hyrax::ObjectNotFoundError)
+      end
+    end
   end
 end
