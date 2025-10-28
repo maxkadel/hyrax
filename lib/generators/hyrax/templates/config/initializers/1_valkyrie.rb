@@ -99,6 +99,7 @@ custom_queries = [Hyrax::CustomQueries::Navigators::CollectionMembers,
                   Hyrax::CustomQueries::FindIdsByModel,
                   Hyrax::CustomQueries::FindManyByAlternateIds,
                   Hyrax::CustomQueries::FindModelsByAccess,
+                  Hyrax::CustomQueries::FindOrCreateById,
                   Hyrax::CustomQueries::FindCountBy,
                   Hyrax::CustomQueries::FindByDateRange]
 custom_queries.each do |handler|

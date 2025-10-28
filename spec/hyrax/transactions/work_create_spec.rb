@@ -2,6 +2,7 @@
 require 'spec_helper'
 require 'hyrax/transactions'
 require 'dry/container/stub'
+require 'hyrax/specs/shared_specs/simple_work'
 
 RSpec.describe Hyrax::Transactions::WorkCreate, :clean_repo do
   subject(:tx)     { described_class.new }
@@ -49,7 +50,6 @@ RSpec.describe Hyrax::Transactions::WorkCreate, :clean_repo do
 
       it 'adds uploaded files' do
         tx.with_step_args('work_resource.add_file_sets' => { uploaded_files: uploaded_files })
-
         expect(tx.call(change_set).value!)
           .to have_file_set_members(be_persisted, be_persisted, be_persisted, be_persisted)
       end

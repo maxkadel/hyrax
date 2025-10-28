@@ -6,7 +6,7 @@ module Hyrax
   #
   # Mediates uploads to a work.
   #
-  # Given an existing Work object, `#add` some set of files, then call `#attach`
+  # Given an existing Work object, `#add` some set of uploaded_files, then call `#attach`
   # to handle creation/attachment of File Sets, and trigger persistence of files
   # to the storage backend.
   #
@@ -16,24 +16,19 @@ module Hyrax
   # attribute, by supporting another file/IO class, etc...) can use a different
   # `Handler` implementation. The only guarantee made by the _interface_ is that
   # the process of persisting the relationship between `work` and the provided
-  # `files` will start when `#attach` is called.
+  # `uploaded_files` will start when `#attach` is called.
   #
   # This base implementation accepts only `Hyrax::UploadedFile` instances and,
   # for each one, creates a `Hyrax::FileSet` with permissions matching those on
   # `work`, and appends that FileSet to `member_ids`. The `FileSet` will be
   # added in the order that the `UploadedFiles` are passed in. If the work has a
   # `nil` `representative_id` and/or `thumbnail_id`, the first `FileSet` will be
-  # set to that value. An `IngestJob` will be equeued, for each `FileSet`. When
+  # set to that value. A `ValkyrieIngestJob` will be enqueued, for each `FileSet`. When
   # all of the `files` have been processed, the work will be saved with the
   # added members. While this is happening, we take a lock on the work via
   # `Lockable` (Redis/Redlock).
   #
   # This also publishes events as required by `Hyrax.publisher`.
-  #
-  # @todo make this genuinely retry-able. if we fail after creating some of
-  #   the file_sets, but not attaching them to works, we should resolve that
-  #   incomplete work on subsequent runs.
-  #
   #
   # @example
   #   Hyrax::WorkUploadsHandler.new(work: my_work)
@@ -56,7 +51,7 @@ module Hyrax
     # @param [Hyrax::Work] work
     # @param [#save] persister the valkyrie persister to use
     def initialize(work:, persister: Hyrax.persister)
-      @work = work
+      @work = work # Note that this is reloaded after locking
       @persister = persister
     end
 
@@ -77,7 +72,7 @@ module Hyrax
     #   `UploadedFile`
     def add(files:, file_set_params: [])
       validate_files(files) &&
-        @files = Array.wrap(files).reject { |f| f.file_set_uri.present? }
+        @files = Array.wrap(files).reject { |file| work.member_ids.include?(file.file_set_uri) }
       @file_set_params = file_set_params || []
       self
     end
@@ -93,6 +88,7 @@ module Hyrax
       return true if Array.wrap(files).empty? # short circuit to avoid aquiring a lock we won't use
 
       acquire_lock_for(work.id) do
+        @work = Hyrax.query_service.find_by(id: work.id) # reload work so we are sure to have the most recent version after locking
         event_payloads = files.each_with_object([]).with_index do |(file, arry), index|
           arry << make_file_set_and_ingest(file, @file_set_params[index] || {})
         end
@@ -110,7 +106,7 @@ module Hyrax
     ##
     # @api private
     def make_file_set_and_ingest(file, file_set_params = {})
-      file_set = @persister.save(resource: Hyrax::FileSet.new(file_set_args(file, file_set_params)))
+      file_set = find_or_create_file_set(file:, file_set_params:)
       Hyrax.publisher.publish('object.deposited', object: file_set, user: file.user)
       file.add_file_set!(file_set)
 
@@ -123,6 +119,18 @@ module Hyrax
       append_to_work(file_set)
 
       { file_set: file_set, user: file.user, job: ValkyrieIngestJob.new(file) }
+    end
+
+    ##
+    # @api private
+    # The Hyrax::FileSet should be updated in the UpdateWorkMembers step, not here
+    def find_or_create_file_set(file:, file_set_params:)
+      file_set_uri = file.file_set_uri
+      if file.file_set_uri
+        Hyrax.query_service.find_by(id: file_set_uri)
+      else
+        @persister.save(resource: Hyrax::FileSet.new(file_set_args(file, file_set_params)))
+      end
     end
 
     ##
@@ -179,6 +187,7 @@ module Hyrax
     def validate_files(files)
       files.each do |file|
         next if file.is_a? Hyrax::UploadedFile
+
         raise ArgumentError, "Hyrax::UploadedFile required, but #{file.class} received: #{file.inspect}"
       end
     end
