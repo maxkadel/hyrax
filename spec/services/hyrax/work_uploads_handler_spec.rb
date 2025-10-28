@@ -141,26 +141,38 @@ RSpec.describe Hyrax::WorkUploadsHandler, valkyrie_adapter: :test_adapter do
         end
       end
 
-      # we can't use the memory based test_adapter to test async
-      # How can we get this to run on all three test apps?
-      # We need Dassie to use the wings_adapter, and the other ones to use their real persistence adapters
-      context 'when running background jobs', perform_enqueued: [ValkyrieIngestJob], valkyrie_adapter: :wings_adapter do
-        before do
-          # stub out characterization to avoid system calls
-          characterize = double(run: true)
-          allow(Hyrax.config)
-            .to receive(:characterization_service)
-            .and_return(characterize)
-        end
+      context 'when running background jobs', perform_enqueued: [ValkyrieIngestJob] do
+        shared_examples 'able to parallelize' do
+          before do
+            # stub out characterization to avoid system calls
+            characterize = double(run: true)
+            allow(Hyrax.config)
+              .to receive(:characterization_service)
+              .and_return(characterize)
+          end
 
-        it 'persists the uploaded files asynchronously' do
-          described_class.new(work: work.dup).add(files: [uploads[0]]).attach
-          described_class.new(work: work.dup).add(files: [uploads[1]]).attach
-          described_class.new(work: work.dup).add(files: [uploads[2]]).attach
-          reloaded_work = Hyrax.query_service.find_by(id: work.id)
-          expect(Hyrax.query_service.find_members(resource: reloaded_work)).to contain_exactly(have_attached_files,
-          have_attached_files, have_attached_files)
-          expect(reloaded_work.member_ids.count).to eq(3)
+          it 'persists the uploaded files asynchronously' do
+            described_class.new(work: work.dup).add(files: [uploads[0]]).attach
+            described_class.new(work: work.dup).add(files: [uploads[1]]).attach
+            described_class.new(work: work.dup).add(files: [uploads[2]]).attach
+            reloaded_work = Hyrax.query_service.find_by(id: work.id)
+            expect(Hyrax.query_service.find_members(resource: reloaded_work)).to contain_exactly(have_attached_files,
+            have_attached_files, have_attached_files)
+            expect(reloaded_work.member_ids.count).to eq(3)
+          end
+        end
+        # we can't use the memory based test_adapter to test async
+        context 'with the wings adapter', valkyrie_adapter: :wings_adapter do
+          # This one should run on Dassie
+          it_behaves_like "able to parallelize"
+        end
+        context 'with the postgres adapter', valkyrie_adapter: :postgres_adapter do
+          if Valkyrie.config.metadata_adapter.class.to_s == 'Wings::Valkyrie::MetadataAdapter'
+            skip
+          else
+            # This one should run on Koppie and Sirenia, not Dassie
+            it_behaves_like "able to parallelize"
+          end
         end
       end
     end

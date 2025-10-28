@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 require 'hyrax/transactions'
+require 'hyrax/specs/shared_specs/simple_work'
 
 RSpec.describe Hyrax::Transactions::Steps::AddFileSets, valkyrie_adapter: :test_adapter do
   subject(:step) { described_class.new }
@@ -17,6 +18,12 @@ RSpec.describe Hyrax::Transactions::Steps::AddFileSets, valkyrie_adapter: :test_
       expect(step.call(work, uploaded_files: uploaded_files).value!)
         .to have_file_set_members(be_persisted, be_persisted,
                                   be_persisted, be_persisted)
+    end
+    context 'when it fails for some reason' do
+      it 'gives a failure' do
+        allow(Hyrax::WorkUploadsHandler).to receive(:new).and_return(double('Hyrax::WorkUploadsHandler', add: double('Hyrax::WorkUploadsHandler', attach: false)))
+        expect(step.call(work, uploaded_files: uploaded_files)).to be_failure
+      end
     end
   end
 end
