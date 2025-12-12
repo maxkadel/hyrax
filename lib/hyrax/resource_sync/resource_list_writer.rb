@@ -6,6 +6,12 @@ module Hyrax
     # items, so if we require more than that, we must have multiple Resource
     # lists and add a Resource List Index to point to all of them.
     class ResourceListWriter
+      # Stolen from ProxyDepositRequest
+      class_attribute :work_query_service_class
+      self.work_query_service_class = Hyrax.config.use_valkyrie? ? Hyrax::WorkResourceQueryService : Hyrax::WorkQueryService
+
+      delegate :deleted_work?, :work, :to_s, to: :work_query_service
+      # End stealing from ProxyDepositRequest
       attr_reader :resource_host, :capability_list_url
 
       def initialize(resource_host:, capability_list_url:)
@@ -18,6 +24,10 @@ module Hyrax
       end
 
       private
+
+      def work_query_service
+        @work_query_service ||= work_query_service_class.new(id: work_id)
+      end
 
       def builder
         Nokogiri::XML::Builder.new do |xml|
@@ -33,21 +43,50 @@ module Hyrax
       end
 
       def build_collections(xml, searcher: AbstractTypeRelation.new(allowable_types: Hyrax::ModelRegistry.collection_classes))
-        searcher.search_in_batches(public_access) do |doc_set|
-          build_resources(xml, doc_set, hyrax_routes)
+        Hyrax::ModelRegistry.collection_classes.each do |model|
+          Hyrax.query_service.find_all_of_model(model: model).each do |resource|
+            doc = Hyrax::Indexers::ResourceIndexer.for(resource:).to_solr
+            next unless doc[Hydra.config.permissions.read.group].include?(Hyrax.config.public_user_group_name)
+            build_resources(xml, [doc], hyrax_routes)
+          end
         end
+        
+        # searcher.search_in_batches(public_access) do |doc_set|
+        #   build_resources(xml, doc_set, hyrax_routes)
+        # end
       end
 
       def build_works(xml)
-        Hyrax::WorkRelation.new.search_in_batches(public_access) do |doc_set|
-          build_resources(xml, doc_set, main_app_routes)
+        Hyrax::ModelRegistry.work_classes.each do |model|
+          Hyrax.query_service.find_all_of_model(model: model).each do |resource|
+            doc = Hyrax::Indexers::ResourceIndexer.for(resource:).to_solr
+            puts("-------------------------------------------------------------------------------")
+            puts("CLASS: " + model)
+            puts("HAS MODEL SSIM: " + doc["has_model_ssim"])
+            puts()
+            puts("-------------------------------------------------------------------------------")
+            next unless doc[Hydra.config.permissions.read.group].include?(Hyrax.config.public_user_group_name)
+            build_resources(xml, [doc], hyrax_routes)
+          end
         end
+        # Hyrax::WorkRelation.new.search_in_batches(public_access) do |doc_set|
+        #   build_resources(xml, doc_set, main_app_routes)
+        # end
       end
 
       def build_files(xml)
-        ::FileSet.search_in_batches(public_access) do |doc_set|
-          build_resources(xml, doc_set, main_app_routes)
+        Hyrax::ModelRegistry.file_set_classes.each do |model|
+          Hyrax.query_service.find_all_of_model(model: model).each do |resource|
+            doc = Hyrax::Indexers::ResourceIndexer.for(resource:).to_solr
+            next unless doc[Hydra.config.permissions.read.group].include?(Hyrax.config.public_user_group_name)
+            build_resources(xml, [doc], hyrax_routes)
+          end
         end
+        # searcher = ::FileSet
+        # searcher = AbstractTypeRelation.new(allowable_types: Hyrax::ModelRegistry.file_set_classes)
+        # searcher.search_in_batches(public_access) do |doc_set|
+        #   build_resources(xml, doc_set, main_app_routes)
+        # end
       end
 
       def build_resources(xml, doc_set, routes)
@@ -64,6 +103,9 @@ module Hyrax
           key = doc.fetch('has_model_ssim', []).first.constantize.model_name.singular_route_key
           xml.loc routes.send(key + "_url", doc['id'], host: resource_host)
           xml.lastmod doc['system_modified_dtsi']
+          # key = doc.internal_resource.constantize.model_name.singular_route_key
+          # xml.loc routes.send(key + "_url", doc.id.to_s, host: resource_host)
+          # xml.lastmod doc.updated_at.to_s
         end
       end
 

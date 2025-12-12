@@ -61,7 +61,6 @@ module Hyrax
                           { schema: schema_name }
                         end
           rules = @rules || index_loader.index_rules_for(**schema_args)
-
           rules.each do |index_key, method|
             document[index_key] = resource.try(method)
           end

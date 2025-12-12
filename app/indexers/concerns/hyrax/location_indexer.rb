@@ -13,6 +13,8 @@ module Hyrax
     private
 
     def based_near_label_lookup(locations)
+      return nil unless locations
+
       locations.map do |loc|
         location_service.full_label(loc) if loc.present?
       end

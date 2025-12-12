@@ -107,6 +107,7 @@ module Hyrax
       ##
       # @return [String]
       def to_rdf_representation
+        byebug
         name
       end
 
