@@ -20,6 +20,9 @@ spec:
       labels:
         {{- include "hyrax.selectorLabels" . | nindent 8 }}
     spec:
+      {{- with .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ . }}
+      {{- end }}
       initContainers:
         {{- if .Values.solrPreSetupInitContainer }}
         {{- toYaml .Values.solrPreSetupInitContainer | nindent 8 }}

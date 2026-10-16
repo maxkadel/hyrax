@@ -200,6 +200,15 @@ startupProbe:
 
 resources: {}
 
+# Seconds to wait for in-flight requests to finish on shutdown; unset uses the Kubernetes default (30).
+terminationGracePeriodSeconds:
+
+podDisruptionBudget:
+  enabled: false
+  # Set one of the two; maxUnavailable wins if both are set.
+  minAvailable: 1
+  # maxUnavailable: 1
+
 worker:
   enabled: true
   replicaCount: 3
@@ -216,6 +225,14 @@ worker:
   tolerations: []
   affinity: {}
   resources: {}
+
+  # Set above Sidekiq's shutdown timeout so in-flight jobs can finish before SIGKILL; unset uses the Kubernetes default (30).
+  terminationGracePeriodSeconds:
+
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
 
   # see: https://github.com/mperham/sidekiq/wiki/Kubernetes#health-checks
   readinessProbe:
@@ -235,7 +252,16 @@ worker:
     minReplicas: 2
     maxReplicas: 10
     targetCPUUtilizationPercentage: 70
+    # Sidekiq memory doesn't track load, so a memory target usually pins the worker at maxReplicas.
     # targetMemoryUtilizationPercentage: 80
+    # Slow scale-down so in-flight jobs aren't interrupted.
+    # behavior:
+    #   scaleDown:
+    #     stabilizationWindowSeconds: 900
+    #     policies:
+    #       - type: Pods
+    #         value: 1
+    #         periodSeconds: 300
 
 fcrepo:
   enabled: true
@@ -381,7 +407,15 @@ autoscaling:
   minReplicas: 2
   maxReplicas: 10
   targetCPUUtilizationPercentage: 70
+  # Rails memory is mostly baseline heap and doesn't track load, so a memory target usually pins web at maxReplicas.
   # targetMemoryUtilizationPercentage: 80
+  # behavior:
+  #   scaleDown:
+  #     stabilizationWindowSeconds: 600
+  #     policies:
+  #       - type: Pods
+  #         value: 1
+  #         periodSeconds: 60
 
 global:
   # These global postgresql values are used by the fcrepo chart

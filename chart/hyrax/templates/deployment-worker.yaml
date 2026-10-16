@@ -6,7 +6,9 @@ metadata:
   labels:
     {{- include "hyrax.labels" . | nindent 4 }}
 spec:
+{{- if not .Values.worker.autoscaling.enabled }}
   replicas: {{ .Values.worker.replicaCount }}
+{{- end }}
   selector:
     matchLabels:
       {{- include "hyrax.workerSelectorLabels" . | nindent 6 }}
@@ -19,6 +21,9 @@ spec:
       labels:
         {{- include "hyrax.workerSelectorLabels" . | nindent 8 }}
     spec:
+      {{- with .Values.worker.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ . }}
+      {{- end }}
       initContainers:
         - name: service-wait
           image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag | default .Chart.AppVersion }}"

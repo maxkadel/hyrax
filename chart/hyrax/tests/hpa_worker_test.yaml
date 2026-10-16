@@ -64,3 +64,21 @@ tests:
       - lengthEqual:
           path: spec.metrics
           count: 2
+
+  - it: omits behavior by default
+    set:
+      worker.autoscaling.enabled: true
+    asserts:
+      - notExists:
+          path: spec.behavior
+
+  - it: passes through a configured scaleDown behavior
+    set:
+      worker.autoscaling.enabled: true
+      worker.autoscaling.behavior:
+        scaleDown:
+          stabilizationWindowSeconds: 900
+    asserts:
+      - equal:
+          path: spec.behavior.scaleDown.stabilizationWindowSeconds
+          value: 900

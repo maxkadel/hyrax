@@ -12,6 +12,10 @@ spec:
     name: {{ include "hyrax.fullname" . }}-worker
   minReplicas: {{ .Values.worker.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.worker.autoscaling.maxReplicas }}
+  {{- with .Values.worker.autoscaling.behavior }}
+  behavior:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   metrics:
   {{- if .Values.worker.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource

@@ -1,0 +1,52 @@
+suite: deployments leave replicas to the HPA and set an optional grace period
+templates:
+  - templates/deployment.yaml
+  - templates/deployment-worker.yaml
+tests:
+  - it: sets worker replicas from replicaCount when autoscaling is off
+    template: templates/deployment-worker.yaml
+    set:
+      worker.replicaCount: 3
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 3
+
+  - it: omits worker replicas when worker autoscaling is on
+    template: templates/deployment-worker.yaml
+    set:
+      worker.autoscaling.enabled: true
+    asserts:
+      - notExists:
+          path: spec.replicas
+
+  - it: omits web replicas when web autoscaling is on
+    template: templates/deployment.yaml
+    set:
+      autoscaling.enabled: true
+    asserts:
+      - notExists:
+          path: spec.replicas
+
+  - it: leaves terminationGracePeriodSeconds unset by default
+    asserts:
+      - notExists:
+          path: spec.template.spec.terminationGracePeriodSeconds
+
+  - it: sets web terminationGracePeriodSeconds when configured
+    template: templates/deployment.yaml
+    set:
+      terminationGracePeriodSeconds: 60
+    asserts:
+      - equal:
+          path: spec.template.spec.terminationGracePeriodSeconds
+          value: 60
+
+  - it: sets worker terminationGracePeriodSeconds when configured
+    template: templates/deployment-worker.yaml
+    set:
+      worker.terminationGracePeriodSeconds: 600
+    asserts:
+      - equal:
+          path: spec.template.spec.terminationGracePeriodSeconds
+          value: 600

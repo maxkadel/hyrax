@@ -1,0 +1,58 @@
+suite: pod disruption budgets for web and worker
+templates:
+  - templates/pdb-web.yaml
+  - templates/pdb-worker.yaml
+tests:
+  - it: renders nothing by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders a web PDB with minAvailable on policy/v1
+    template: templates/pdb-web.yaml
+    set:
+      podDisruptionBudget.enabled: true
+    asserts:
+      - equal:
+          path: apiVersion
+          value: policy/v1
+      - equal:
+          path: spec.minAvailable
+          value: 1
+      - equal:
+          path: spec.selector.matchLabels
+          value:
+            app.kubernetes.io/name: hyrax
+            app.kubernetes.io/instance: RELEASE-NAME
+
+  - it: prefers maxUnavailable over minAvailable for web
+    template: templates/pdb-web.yaml
+    set:
+      podDisruptionBudget.enabled: true
+      podDisruptionBudget.maxUnavailable: 1
+    asserts:
+      - equal:
+          path: spec.maxUnavailable
+          value: 1
+      - notExists:
+          path: spec.minAvailable
+
+  - it: renders a worker PDB selecting the worker pods
+    template: templates/pdb-worker.yaml
+    set:
+      worker.podDisruptionBudget.enabled: true
+    asserts:
+      - equal:
+          path: spec.selector.matchLabels
+          value:
+            app.kubernetes.io/name: hyrax-worker
+            app.kubernetes.io/instance: RELEASE-NAME
+
+  - it: renders no worker PDB when the worker is disabled
+    template: templates/pdb-worker.yaml
+    set:
+      worker.enabled: false
+      worker.podDisruptionBudget.enabled: true
+    asserts:
+      - hasDocuments:
+          count: 0

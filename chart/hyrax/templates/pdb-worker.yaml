@@ -1,0 +1,17 @@
+{{- if and .Values.worker.enabled .Values.worker.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "hyrax.fullname" . }}-worker
+  labels:
+    {{- include "hyrax.labels" . | nindent 4 }}
+spec:
+  {{- if .Values.worker.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.worker.podDisruptionBudget.maxUnavailable }}
+  {{- else }}
+  minAvailable: {{ .Values.worker.podDisruptionBudget.minAvailable }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "hyrax.workerSelectorLabels" . | nindent 6 }}
+{{- end }}
